@@ -122,6 +122,10 @@ body {
 }
 
 
+.scroll-indigo {
+  scrollbar-color: #8da1ec;
+}
+
 .scrollable {
   scroll-behavior: smooth;
 }
