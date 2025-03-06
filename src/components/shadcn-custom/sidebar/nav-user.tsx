@@ -1,13 +1,10 @@
 "use client";
 
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 import {
   BadgeCheck,
-  Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
-  Sparkles,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -37,7 +34,7 @@ export function NavUser({
   };
 }) {
   const router = useRouter();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const { isMobile } = useSidebar();
 
   const handleLogout = () => {
@@ -56,7 +53,7 @@ export function NavUser({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="ml-[0.27rem] data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="ml-[0.27rem] data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg text-white">
                 <AvatarImage src={user.avatar} alt={user.name} />

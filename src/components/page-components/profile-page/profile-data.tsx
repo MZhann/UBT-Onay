@@ -80,11 +80,12 @@ const ProfileData = ({
       closeModal();
       // Trigger parent's refresh by updating triggerProfileInfo (for example, with a timestamp)
       setTriggerProfileInfo(!triggerProfileInfo);
-    } catch (err: any) {
+    } catch (err) {
+      console.log(err);
       toast({
         variant: "destructive",
         title: "Update Failed",
-        description: err.message,
+        description: 'Error, check if every input is filled',
       });
     }
   };

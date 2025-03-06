@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { useState } from "react";
-import { House, LucideIcon } from "lucide-react";
+// import {  } from "react";
+import { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
@@ -11,14 +11,14 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
+  // SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { ChevronDown, ChevronRight, GraduationCap } from "lucide-react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+// import { ChevronDown, ChevronRight, GraduationCap } from "lucide-react";
+// import {
+  // Collapsible,
+  // CollapsibleContent,
+  // CollapsibleTrigger,
+// } from "@/components/ui/collapsible";
 
 export function NavMain({
   items,
@@ -35,8 +35,6 @@ export function NavMain({
   }[];
 }) {
   const pathname = usePathname();
-
-  const courses = ["Course 1", "Course 2", "Course 3"];
 
   return (
     <SidebarGroup>

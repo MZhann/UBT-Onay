@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
+// import React, { useEffect, useState } from "react";
+// import Image from "next/image";
 import Link from "next/link";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState, AppDispatch } from "@/store";
-import { House, NotepadText, SearchSlash, Trophy } from "lucide-react";
+// import { useSelector, useDispatch } from "react-redux";
+// import { RootState, AppDispatch } from "@/store";
+import { House, NotepadText, SearchSlash, Trophy, LockKeyhole } from "lucide-react";
 import { NavMain } from "@/components/shadcn-custom/sidebar/nav-main";
 import { NavUser } from "@/components/shadcn-custom/sidebar/nav-user";
 import {
@@ -40,6 +40,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       { title: "UTB tests", url: "/ubt-tests", icon: NotepadText },
       { title: "Mistake Bank", url: "/mistake-bank", icon: SearchSlash },
       { title: "Leaderboard", url: "/leaderboard", icon: Trophy },
+      { title: "Admin page", url: "/admin", icon: LockKeyhole },
     ],
   };
 
