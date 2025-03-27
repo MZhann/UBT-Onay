@@ -1,22 +1,19 @@
 import { AxiosError } from "axios";
 import { backendApiInstance } from "./index";
-
+import { QuizAttempt, QuizResponse } from "@/types/generatedQuizTypes";
+import { GeneratedQuiz } from "@/types/generatedQuizTypes";
 // interface GenerateQuizPayload {
 //   user_prompt: string;
 // }
 
-interface QuizResponse {
-  _id: string;
-  title: string;
-  subject: string;
-  questions: { id: string }[];
-}
-
 export async function generateQuiz(userPrompt: string): Promise<QuizResponse> {
   try {
-    const response = await backendApiInstance.post<QuizResponse>("/generated-quiz/", {
-      user_prompt: userPrompt,
-    });
+    const response = await backendApiInstance.post<QuizResponse>(
+      "/generated-quiz/",
+      {
+        user_prompt: userPrompt,
+      }
+    );
 
     const quizData = response.data;
 
@@ -37,5 +34,36 @@ export async function generateQuiz(userPrompt: string): Promise<QuizResponse> {
       throw error;
     }
     throw new Error("Failed to generate quiz");
+  }
+}
+
+//get quiz attempts
+export async function getMyQuizAttempts(): Promise<QuizAttempt[]> {
+  try {
+    const response = await backendApiInstance.get<QuizAttempt[]>(
+      "/generated-quiz/attempts/me"
+    );
+    return response.data;
+  } catch (error) {
+    if ((error as AxiosError).isAxiosError) {
+      throw error;
+    }
+    throw new Error("Failed to fetch quiz attempts");
+  }
+}
+
+// Получение всех сгенерированных тестов текущего пользователя
+
+export async function fetchMyGeneratedQuizzes(): Promise<GeneratedQuiz[]> {
+  try {
+    const response = await backendApiInstance.get<GeneratedQuiz[]>(
+      "/generated-quiz/me"
+    );
+    return response.data;
+  } catch (error) {
+    if ((error as AxiosError).isAxiosError) {
+      throw error;
+    }
+    throw new Error("Failed to fetch generated quizzes");
   }
 }

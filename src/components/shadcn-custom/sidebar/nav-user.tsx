@@ -88,14 +88,14 @@ export function NavUser({
             
             <DropdownMenuGroup>
               <Link href={"/profile"}>
-                <DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer" aria-label="кнопка профиль">
                   <BadgeCheck />
                   Profile
                 </DropdownMenuItem>
               </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} aria-label="кнопка выйти">
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer" aria-label="кнопка выйти">
               <LogOut />
               Log Out
             </DropdownMenuItem>

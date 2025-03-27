@@ -6,13 +6,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import clsx from "clsx";
-import Image from "next/image";
 
 import { registerUser } from "@/api/auth"; // Update path as needed
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Loader2 } from "lucide-react";
 import {
   Card,
   CardHeader,
@@ -32,6 +32,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [step, setStep] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   // React Hook Form setup
   const {
@@ -60,6 +61,7 @@ export default function RegisterPage() {
   // Final submit that calls registerUser
   const onSubmit = async (data: FormData) => {
     try {
+      setIsLoading(true);
       const payload = {
         first_name: data.name,
         last_name: data.surname,
@@ -75,8 +77,10 @@ export default function RegisterPage() {
         title: "Registration Successful",
         description: "Your account has been created successfully!",
       });
+      setIsLoading(false);
       router.push("/"); // Redirect as needed
     } catch (error) {
+      setIsLoading(false);
       toast({
         variant: "destructive",
         title: "Registration Failed",
@@ -86,11 +90,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex w-full pt-28 justify-center min-h-screen bg-[#03174C] relative z-0">
-      <Image src="/assets/images/decoration/auth-bottom-left.png" className="absolute left-4 bottom-4 -z-10" width={380} height={380} alt='decor' /> 
-      <Image src="/assets/images/decoration/auth-top-left.png" className="absolute left-5 top-5 -z-10" width={320} height={320} alt='decor' /> 
-      <Image src="/assets/images/decoration/auth-top-right.png" className="absolute right-0 top-0 -z-10" width={350} height={310} alt='decor' /> 
-      <Image src="/assets/images/decoration/auth-bottom-right.png" className="absolute right-5 bottom-5 -z-10" width={450} height={410} alt='decor' /> 
+    <div className="flex w-full pt-28 justify-center min-h-screen relative z-0" style={{backgroundImage: 'url("/assets/images/decoration/starry-bg.svg")', backgroundSize: 'cover'}}>
       <Card className="w-11/12 sm:w-1/2 md:w-1/3">
         <CardHeader>
           <CardTitle className="text-2xl text-center font-bold text-white">
@@ -212,8 +212,8 @@ export default function RegisterPage() {
                   <span /> // placeholder to maintain spacing
                 )}
 
-                <Button type="submit" variant="indigo" className={clsx('h-10 rounded-lg', step==0 && 'w-full')}>
-                  {step === totalSteps - 1 ? "Register" : "Next"}
+                <Button type="submit" variant="indigo" className={clsx('h-10 rounded-lg', step==0 && 'w-full')} disabled={isLoading}>
+                  {isLoading ? <Loader2 className="animate-spin size-4 text-white" /> : step === totalSteps - 1 ? "Register" : "Next"}
                 </Button>
               </div>
               <p className="text-sm text-center w-full mt-3 text-white">

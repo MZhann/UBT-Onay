@@ -82,7 +82,7 @@ const UNTTestsPage = () => {
   }, [selectedYear, selectedSubjects, quizzes]);
 
   return (
-    <div className="flex flex-col w-full items-center px-20 pt-10">
+    <div className="flex flex-col w-full items-center px-20 pt-10 pb-10">
       <div className="w-full">
         <h1 className="text-2xl font-bold mb-6 px-14">UNT Tests</h1>
       </div>

@@ -5,7 +5,7 @@ const PageLinks = () => {
     <div className="grid auto-rows-min gap-4 md:grid-cols-3">
       <Link
         href={"/ubt-tests"}
-        className="block p-6 relative z-0 bg-[#8da1ec] aspect-video rounded-xl bg-[url('/assets/images/decoration/unt-tests.svg')]  bg-cover bg-centerfull"
+        className="block p-6 relative z-0 bg-[#8da1ec] aspect-video rounded-xl bg-[url('/assets/images/decoration/unt-tests.svg')]  bg-cover bg-centerfull hover:-mt-1 duration-100"
       >
         <div className="absolute w-full  h-14 backdrop-blur-md top-0 left-0 rounded-xl"></div>
         <div className="absolute w-full  h-16 backdrop-blur-md bottom-0 left-0 rounded-xl"></div>
@@ -20,7 +20,7 @@ const PageLinks = () => {
       </Link>
       <Link
         href={"/mistake-bank"}
-        className="p-6 relative z-0 bg-[#f3ecd8] aspect-video rounded-xl bg-[url('/assets/images/decoration/mistake-bank.svg')]  bg-cover bg-centerfull"
+        className="p-6 relative z-0 bg-[#f3ecd8] aspect-video rounded-xl bg-[url('/assets/images/decoration/mistake-bank.svg')]  bg-cover bg-centerfull hover:-mt-1 duration-100"
       >
         {/* <div className="absolute w-full  h-14 backdrop-blur-md top-0 left-0 rounded-xl"></div> */}
         <div className="absolute w-full  h-16 backdrop-blur-sm bottom-0 left-0 rounded-xl"></div>
@@ -34,7 +34,7 @@ const PageLinks = () => {
       </Link>
       <Link
         href={"/leaderboard"}
-        className="p-6 relative z-0 bg-[#5b80f1] aspect-video rounded-xl bg-[url('/assets/images/decoration/leaderboard.svg')]  bg-cover bg-centerfull"
+        className="p-6 relative z-0 bg-[#5b80f1] aspect-video rounded-xl bg-[url('/assets/images/decoration/leaderboard.svg')]  bg-cover bg-centerfull hover:-mt-1 duration-100"
       >
         <div className="absolute w-full  h-20 backdrop-blur-md top-0 left-0 rounded-xl"></div>
         <div className="absolute w-full  h-20 backdrop-blur-md bottom-0 left-0 rounded-xl"></div>

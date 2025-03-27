@@ -30,7 +30,7 @@ const Profile = () => {
   }, [triggerProfileInfo]);
 
   if (loading) {
-    return <div className="text-center mt-10 w-full flex justify-center items-center h-[]"><Loader className="size-12 text-myindigo animate-spin" /></div>;
+    return <div className="text-center mt-10 w-full flex justify-center items-center h-[70%]"><Loader className="size-16 text-myindigo animate-spin" /></div>;
   }
 
   if (error || !profile) {

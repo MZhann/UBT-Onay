@@ -106,14 +106,14 @@ const GenerateTestBlock = () => {
               />
               <Label htmlFor="single-question">Single Question</Label>
             </div>
-            <div className="flex items-center space-x-2">
+            {/* <div className="flex items-center space-x-2">
               <Checkbox
                 id="true-false"
                 checked={selectedOptions.includes("true-false")}
                 onCheckedChange={() => toggleOption("true-false")}
               />
               <Label htmlFor="true-false">True or False</Label>
-            </div>
+            </div> */}
           </div>
 
           <div className="flex gap-1 h-4">

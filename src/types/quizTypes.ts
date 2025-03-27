@@ -108,11 +108,45 @@ export interface AttemptAnswer {
 }
 
 export interface GetQuizAttemptDetailsResponse {
-  attempt_id: string;
+  _id: string;
+  quiz_id: string;
+  quiz_title: string;
+  quiz_subject: string;
+  score: number;
+  started_at: string;
+  finished_at: string;
+  answers: {
+    question_id: string;
+    question_text: string;
+    selected_option: string[]; // user-selected labels
+    options: {
+      label: string;
+      option_text: string;
+      is_correct: boolean;
+    }[];
+  }[];
+}
+
+
+export interface QuizAttemptShort {
+  _id: string;
   quiz_id: string;
   user_id: string;
+  score: number;
+  started_at: string;
+  ended_at: string | null;
+  is_completed: boolean;
   quiz_title: string;
   quiz_variant: string;
   quiz_year: string;
-  answers: AttemptAnswer[];
+  answers: {
+    question_text: string;
+    selected_options: string[];
+    options: {
+      label: string;
+      text: string;
+      is_correct: boolean;
+    }[];
+  }[];
 }
+

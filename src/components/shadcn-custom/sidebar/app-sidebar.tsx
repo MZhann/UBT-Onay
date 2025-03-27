@@ -1,13 +1,21 @@
 "use client";
 
-// import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 // import Image from "next/image";
 import Link from "next/link";
-// import { useSelector, useDispatch } from "react-redux";
-// import { RootState, AppDispatch } from "@/store";
-import { House, NotepadText, SearchSlash, Trophy, LockKeyhole } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/store";
+import {
+  House,
+  NotepadText,
+  SearchSlash,
+  Trophy,
+  LockKeyhole,
+} from "lucide-react";
 import { NavMain } from "@/components/shadcn-custom/sidebar/nav-main";
 import { NavUser } from "@/components/shadcn-custom/sidebar/nav-user";
+import { getCurrentUser } from "@/store/slices/userSlice";
+
 import {
   Sidebar,
   SidebarContent,
@@ -17,22 +25,22 @@ import {
 } from "@/components/ui/sidebar";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  // const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>();
 
-  // const { name, surname, email, loading } = useSelector((state: RootState) => state.user);
+  const { name, surname, email } = useSelector(
+    (state: RootState) => state.user
+  );
 
-  // useEffect(() => {
-  //   dispatch(getCurrentUser());
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(getCurrentUser());
+  }, [dispatch]);
 
   // const userName = name || surname ? `${name} ${surname}` : "Loading...";
 
   const data = {
     user: {
-      // name: userName,
-      name: "userName",
-      // email: email || "no email",
-      email: "no email",
+      name: `${name} ${surname}` || "Loading...",
+      email: email || "no email",
       avatar: "/assets/images/profile-pics/robot-avatar.png",
     },
     navMain: [
@@ -48,7 +56,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <Link href={"/"}>
-          <div className="text-white font-bold text-2xl pl-3 pt-3">UBT-Onay</div>
+          <div className="text-white font-bold text-2xl pl-3 pt-3">
+            UBT-Onay
+          </div>
         </Link>
       </SidebarHeader>
       <SidebarContent className="flex flex-col justify-between">
@@ -62,4 +72,3 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     </Sidebar>
   );
 }
-

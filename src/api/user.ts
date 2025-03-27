@@ -14,6 +14,7 @@ export async function getProfile(): Promise<ProfileResponse> {
 
     return response.data;
   } catch (error) {
+    window.location.replace("/login");
     if ((error as AxiosError).isAxiosError) {
       throw error;
     }

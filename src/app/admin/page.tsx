@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import QuestionCreation from "@/components/page-components/admin/questions-creation";
+import { Loader2 } from "lucide-react";
 
 const subjectsList = [
   "Физика",
@@ -38,6 +39,7 @@ const Admin = () => {
   const [title, setTitle] = useState("");
   const [year, setYear] = useState("");
   const [variant, setVariant] = useState("");
+  const [isQuizCreating, setIsQuizCreating] = useState(false);
   // const [selectedSubjects, setSelectedSubjects] = useState<
   //   { subject: string; question_count: number }[]
   // >([]);
@@ -98,6 +100,7 @@ const Admin = () => {
 
   // Создание квиза
   const handleCreateQuiz = async () => {
+    setIsQuizCreating(true);
     if (!title || !year || !variant || selectedSubjects.length === 0) {
       toast({
         variant: "destructive",
@@ -117,8 +120,11 @@ const Admin = () => {
 
       setQuizId(response._id);
       toast({ title: "Квиз создан!", description: "Теперь добавьте вопросы." });
+      setIsQuizCreating(false);
     } catch (error) {
-      console.log(error)
+      setIsQuizCreating(false);
+
+      console.log(error);
       toast({
         variant: "destructive",
         title: "Ошибка при создании квиза",
@@ -181,7 +187,6 @@ const Admin = () => {
                     <Checkbox
                       checked={isChecked}
                       className="border-2 border-myindigo"
-
                       onCheckedChange={() => toggleSubject(subject)}
                     />
                     <Label>{subject}</Label>
@@ -203,8 +208,18 @@ const Admin = () => {
           </div>
 
           {/* Кнопка создания */}
-          <Button className="mt-6 w-full" variant={'indigo'} onClick={handleCreateQuiz}>
-            Создать квиз
+          <Button
+            className="mt-6 w-full"
+            variant={"indigo"}
+            onClick={handleCreateQuiz}
+            disabled={isQuizCreating}
+          >
+            {isQuizCreating ? (
+              <Loader2 className="animate-spin size-8 " />
+            ) : (
+              "Create Quiz"
+            )}
+            Create Quiz
           </Button>
         </div>
       ) : (

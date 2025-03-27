@@ -11,7 +11,8 @@ import {
   SubmitAnswerPayload,
   SubmitAnswerResponse,
   FinishQuizAttemptResponse,
-  GetQuizAttemptDetailsResponse
+  GetQuizAttemptDetailsResponse,
+  QuizAttemptShort
 } from "@/types/quizTypes";
 
 // Получение всех тестов
@@ -129,5 +130,21 @@ export async function getQuizAttemptDetails(attemptId: string): Promise<GetQuizA
       throw error;
     }
     throw new Error("Failed to fetch quiz attempt details");
+  }
+}
+
+
+
+export async function getMyQuizAttempts(): Promise<QuizAttemptShort[]> {
+  try {
+    const response = await backendApiInstance.get<QuizAttemptShort[]>(
+      "/quiz/attempts/me"
+    );
+    return response.data;
+  } catch (error) {
+    if ((error as AxiosError).isAxiosError) {
+      throw error;
+    }
+    throw new Error("Failed to fetch quiz attempts");
   }
 }
