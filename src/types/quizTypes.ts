@@ -106,19 +106,22 @@ export interface AttemptAnswer {
   }[];
   selected_option: string[];
 }
-
 export interface GetQuizAttemptDetailsResponse {
-  _id: string;
+  attempt_id: string;
   quiz_id: string;
+  user_id: string;
   quiz_title: string;
-  quiz_subject: string;
+  quiz_variant: string;
+  quiz_year: string;
+  time_taken: number; // in seconds
+  max_score: number;
   score: number;
-  started_at: string;
-  finished_at: string;
+  questions_count: number;
   answers: {
     question_id: string;
     question_text: string;
-    selected_option: string[]; // user-selected labels
+    selected_options: string[]; // ✅ correct field name
+    correct_options: string[]; // ✅ available and useful
     options: {
       label: string;
       option_text: string;

@@ -12,13 +12,15 @@ import {
   SubmitAnswerResponse,
   FinishQuizAttemptResponse,
   GetQuizAttemptDetailsResponse,
-  QuizAttemptShort
+  QuizAttemptShort,
 } from "@/types/quizTypes";
 
 // Получение всех тестов
 export async function getAllQuizzes(): Promise<GetAllQuizzesResponse[]> {
   try {
-    const response = await backendApiInstance.get<GetAllQuizzesResponse[]>("/quiz/");
+    const response = await backendApiInstance.get<GetAllQuizzesResponse[]>(
+      "/quiz/"
+    );
     return response.data;
   } catch (error) {
     if ((error as AxiosError).isAxiosError) {
@@ -29,9 +31,14 @@ export async function getAllQuizzes(): Promise<GetAllQuizzesResponse[]> {
 }
 
 // Создание теста
-export async function createQuiz(payload: CreateQuizPayload): Promise<CreateQuizResponse> {
+export async function createQuiz(
+  payload: CreateQuizPayload
+): Promise<CreateQuizResponse> {
   try {
-    const response = await backendApiInstance.post<CreateQuizResponse>("/quiz/", payload);
+    const response = await backendApiInstance.post<CreateQuizResponse>(
+      "/quiz/",
+      payload
+    );
     return response.data;
   } catch (error) {
     if ((error as AxiosError).isAxiosError) {
@@ -49,7 +56,10 @@ export async function addQuizQuestions(
   try {
     const response = await Promise.all(
       payload.map((question) =>
-        backendApiInstance.post<AddQuizQuestionsResponse>(`/quiz/${quizId}/questions`, question)
+        backendApiInstance.post<AddQuizQuestionsResponse>(
+          `/quiz/${quizId}/questions`,
+          question
+        )
       )
     );
     return response.map((res) => res.data);
@@ -62,10 +72,17 @@ export async function addQuizQuestions(
 }
 
 // Получение вопросов теста
-export async function getQuizQuestions(quizId: string, subject?: string): Promise<GetQuizQuestionsResponse[]> {
+export async function getQuizQuestions(
+  quizId: string,
+  subject?: string
+): Promise<GetQuizQuestionsResponse[]> {
   try {
-    const url = subject ? `/quiz/${quizId}/questions?subject=${encodeURIComponent(subject)}` : `/quiz/${quizId}/questions`;
-    const response = await backendApiInstance.get<GetQuizQuestionsResponse[]>(url);
+    const url = subject
+      ? `/quiz/${quizId}/questions?subject=${encodeURIComponent(subject)}`
+      : `/quiz/${quizId}/questions`;
+    const response = await backendApiInstance.get<GetQuizQuestionsResponse[]>(
+      url
+    );
     return response.data;
   } catch (error) {
     if ((error as AxiosError).isAxiosError) {
@@ -76,9 +93,13 @@ export async function getQuizQuestions(quizId: string, subject?: string): Promis
 }
 
 // Начало попытки прохождения теста
-export async function startQuizAttempt(quizId: string): Promise<StartQuizAttemptResponse> {
+export async function startQuizAttempt(
+  quizId: string
+): Promise<StartQuizAttemptResponse> {
   try {
-    const response = await backendApiInstance.post<StartQuizAttemptResponse>(`/quiz/${quizId}/start`);
+    const response = await backendApiInstance.post<StartQuizAttemptResponse>(
+      `/quiz/${quizId}/start`
+    );
     return response.data;
   } catch (error) {
     if ((error as AxiosError).isAxiosError) {
@@ -94,7 +115,10 @@ export async function submitAnswer(
   payload: SubmitAnswerPayload
 ): Promise<SubmitAnswerResponse> {
   try {
-    const response = await backendApiInstance.post<SubmitAnswerResponse>(`/quiz/attempts/${attemptId}/answer`, payload);
+    const response = await backendApiInstance.post<SubmitAnswerResponse>(
+      `/quiz/attempts/${attemptId}/answer`,
+      payload
+    );
     return response.data;
   } catch (error) {
     if ((error as AxiosError).isAxiosError) {
@@ -105,9 +129,13 @@ export async function submitAnswer(
 }
 
 // Завершение попытки прохождения теста
-export async function finishQuizAttempt(attemptId: string): Promise<FinishQuizAttemptResponse> {
+export async function finishQuizAttempt(
+  attemptId: string
+): Promise<FinishQuizAttemptResponse> {
   try {
-    const response = await backendApiInstance.post<FinishQuizAttemptResponse>(`/quiz/attempts/${attemptId}/finish`);
+    const response = await backendApiInstance.post<FinishQuizAttemptResponse>(
+      `/quiz/attempts/${attemptId}/finish`
+    );
     return response.data;
   } catch (error) {
     if ((error as AxiosError).isAxiosError) {
@@ -117,13 +145,16 @@ export async function finishQuizAttempt(attemptId: string): Promise<FinishQuizAt
   }
 }
 
-
 // Fetch Attempt Details
-export async function getQuizAttemptDetails(attemptId: string): Promise<GetQuizAttemptDetailsResponse> {
+
+export async function getQuizAttemptDetails(
+  attemptId: string
+): Promise<GetQuizAttemptDetailsResponse> {
   try {
-    const response = await backendApiInstance.get<GetQuizAttemptDetailsResponse>(
-      `/quiz/${attemptId}/attempt_details`
-    );
+    const response =
+      await backendApiInstance.get<GetQuizAttemptDetailsResponse>(
+        `/quiz/${attemptId}/attempt_details`
+      );
     return response.data;
   } catch (error) {
     if ((error as AxiosError).isAxiosError) {
@@ -132,8 +163,6 @@ export async function getQuizAttemptDetails(attemptId: string): Promise<GetQuizA
     throw new Error("Failed to fetch quiz attempt details");
   }
 }
-
-
 
 export async function getMyQuizAttempts(): Promise<QuizAttemptShort[]> {
   try {

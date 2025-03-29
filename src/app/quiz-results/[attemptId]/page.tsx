@@ -2,15 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { getQuizAttemptDetails, getQuizQuestions } from "@/api/quiz";
-import { GetQuizAttemptDetailsResponse, GetQuizQuestionsResponse } from "@/types/quizTypes";
+import { getQuizAttemptDetails } from "@/api/quiz";
+import { GetQuizAttemptDetailsResponse } from "@/types/quizTypes";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 export default function QuizResultsPage() {
   const { attemptId } = useParams<{ attemptId: string }>();
   const [attempt, setAttempt] = useState<GetQuizAttemptDetailsResponse | null>(null);
-  const [questions, setQuestions] = useState<GetQuizQuestionsResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,9 +17,7 @@ export default function QuizResultsPage() {
       try {
         if (!attemptId) return;
         const attemptData = await getQuizAttemptDetails(attemptId);
-        const questionsData = await getQuizQuestions(attemptData.quiz_id);
         setAttempt(attemptData);
-        setQuestions(questionsData);
       } catch (error) {
         console.error("Failed to fetch quiz attempt details", error);
       } finally {
@@ -34,10 +31,6 @@ export default function QuizResultsPage() {
   if (loading) return <p className="text-center mt-10 text-myindigo">Loading...</p>;
   if (!attempt) return <p className="text-center mt-10 text-red-500">Attempt not found</p>;
 
-  const started = new Date(attempt.started_at);
-  const finished = new Date(attempt.finished_at);
-  const timeTakenSec = Math.floor((finished.getTime() - started.getTime()) / 1000);
-
   const formatTime = (totalSeconds: number): string => {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -47,33 +40,50 @@ export default function QuizResultsPage() {
   };
 
   return (
-    <div className="p-6 text-gray-800 w-full mx-auto">
-      <h1 className="text-2xl font-bold mb-2">{attempt.quiz_title}</h1>
-      <p className="text-gray-500 mb-1">
-        Total score: <span className="font-bold text-lg text-gray-700">{attempt.score} / {questions.length}</span>
-      </p>
-      <p className="text-gray-500 mb-1">
-        Time taken: <span className="font-bold text-lg text-gray-700">{formatTime(timeTakenSec)}</span>
-      </p>
+    <div className="p-6 text-gray-800 w-full mx-auto px-20">
+      <h1 className="text-3xl font-bold mb-4">{attempt.quiz_title}</h1>
 
-      <div className="space-y-6 mt-6">
-        {questions.map((question, index) => {
-          const userAnswer = attempt.answers.find((a) => a.question_id === question.id);
-          const selected = userAnswer?.selected_option || [];
-          const correctLabels = question.options.filter(opt => opt.is_correct).map(opt => opt.label);
+      <div className="text-lg mb-8 flex items-center justify-between">
+        <p>
+          <span className="text-gray-500">Score:</span>{" "}
+          <span className="font-bold text-gray-700">{attempt.score} / {attempt.max_score}</span>
+        </p>
+        <p>
+          <span className="text-gray-500">Questions:</span>{" "}
+          <span className="font-bold text-gray-700">{attempt.questions_count}</span>
+        </p>
+        <p>
+          <span className="text-gray-500">Time taken:</span>{" "}
+          <span className="font-bold text-gray-700">{formatTime(Math.floor(attempt.time_taken))}</span>
+        </p>
+        <p>
+          <span className="text-gray-500">Variant:</span>{" "}
+          <span className="font-bold text-gray-700">{attempt.quiz_variant}</span>
+        </p>
+        <p>
+          <span className="text-gray-500">Year:</span>{" "}
+          <span className="font-bold text-gray-700">{attempt.quiz_year}</span>
+        </p>
+      </div>
+
+      <div className="space-y-6">
+        {attempt.answers.map((question, index) => {
+          const correctLabels = question.options
+            .filter((opt) => opt.is_correct)
+            .map((opt) => opt.label);
+
           const isCorrect =
-            selected.length > 0 &&
-            selected.every((sel) => correctLabels.includes(sel)) &&
-            correctLabels.length === selected.length;
+            question.selected_options.length === correctLabels.length &&
+            question.selected_options.every((sel) => correctLabels.includes(sel));
 
           return (
-            <div key={question.id} className="p-4 border rounded-lg bg-white shadow">
+            <div key={question.question_id} className="p-4 border rounded-lg bg-white shadow">
               <p className="font-medium text-lg mb-2">
                 {index + 1}. {question.question_text}
               </p>
               <ul className="space-y-1">
                 {question.options.map((opt) => {
-                  const isUserSelected = selected.includes(opt.label);
+                  const isUserSelected = question.selected_options.includes(opt.label);
                   const isCorrectOption = opt.is_correct;
 
                   return (
@@ -88,7 +98,7 @@ export default function QuizResultsPage() {
                           : "text-gray-700"
                       )}
                     >
-                      <span className="font-semibold">{opt.label}.</span> {opt.option_text} {" "}
+                      <span className="font-semibold">{opt.label}.</span> {opt.option_text}{" "}
                       {isUserSelected && <Badge variant="outline">Your choice</Badge>}
                       {isCorrectOption && <Badge className="ml-2">Correct</Badge>}
                     </li>
@@ -96,7 +106,7 @@ export default function QuizResultsPage() {
                 })}
               </ul>
               <p className="mt-2 font-semibold text-sm">
-                Result: {" "}
+                Result:{" "}
                 <span className={isCorrect ? "text-green-600" : "text-red-600"}>
                   {isCorrect ? "Correct" : "Incorrect"}
                 </span>
