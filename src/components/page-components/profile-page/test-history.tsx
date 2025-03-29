@@ -8,12 +8,18 @@ const TestHistory = () => {
   const [attempts, setAttempts] = useState<QuizAttemptShort[]>([]);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-
   useEffect(() => {
     const fetchAttempts = async () => {
       try {
         setIsLoading(true);
         const data = await getMyQuizAttempts();
+
+        if (!data || !Array.isArray(data)) {
+          console.warn("Unexpected response format for quiz attempts");
+          setAttempts([]);
+          return;
+        }
+
         const sorted = data
           .filter((a) => a.is_completed)
           .sort(
@@ -22,12 +28,12 @@ const TestHistory = () => {
               new Date(a.ended_at || "").getTime()
           )
           .slice(0, 3);
-        setAttempts(sorted);
-        setIsLoading(false);
-      } catch (err) {
-        setIsLoading(false);
 
+        setAttempts(sorted);
+      } catch (err) {
         console.error("Failed to load quiz attempts", err);
+      } finally {
+        setIsLoading(false);
       }
     };
 

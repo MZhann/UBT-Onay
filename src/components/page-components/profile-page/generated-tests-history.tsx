@@ -1,3 +1,5 @@
+"use client";
+
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -19,41 +21,47 @@ const GeneratedTestsHistory = () => {
       try {
         setIsLoading(true);
         const data = await fetchMyGeneratedQuizzes();
-        setQuizzes(data);
-        setIsLoading(false);
+        setQuizzes(Array.isArray(data) ? data : []);
       } catch (error) {
-        setIsLoading(false);
         console.error("Failed to load generated quizzes", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     load();
   }, []);
 
-  const paginated = quizzes.slice(0, page * ITEMS_PER_PAGE);
-  const canLoadMore = quizzes.length > paginated.length;
+  const paginated = Array.isArray(quizzes) ? quizzes.slice(0, page * ITEMS_PER_PAGE) : [];
+  const canLoadMore = Array.isArray(quizzes) && quizzes.length > paginated.length;
 
   return (
     <div className="w-full flex flex-col items-center mt-10 mb-20">
       <h2 className="font-bold text-2xl mb-6">Generated tests</h2>
-      {isLoading && (<div className="w-full">
-        <Skeleton className="mt-4  w-full h-24 rounded-xl border-4 bg-[#F2EBD6] px-20"/>
-        <Skeleton className="mt-4  w-full h-24 rounded-xl border-4 bg-[#F2EBD6] px-20"/>
-        <Skeleton className="mt-4  w-full h-24 rounded-xl border-4 bg-[#F2EBD6] px-20"/>
-        <Skeleton className="mt-4  w-full h-24 rounded-xl border-4 bg-[#F2EBD6] px-20"/>
-        <Skeleton className="mt-4  w-full h-24 rounded-xl border-4 bg-[#F2EBD6] px-20"/>
-      </div>)}
-      {quizzes.length === 0 && !isLoading && (
+
+      {isLoading && (
+        <div className="w-full">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton
+              key={i}
+              className="mt-4 w-full h-24 rounded-xl border-4 bg-[#F2EBD6] px-20"
+            />
+          ))}
+        </div>
+      )}
+
+      {!isLoading && paginated.length === 0 && (
         <div className="text-gray-500 w-full flex justify-center">
           <p>No generated tests found.</p>
         </div>
       )}
+
       {paginated.map((quiz) => (
         <div
           key={quiz._id}
           className="flex mt-4 items-center justify-between relative w-full h-24 rounded-xl border-4 z-0 border-[#D37C26] bg-[#F2EBD6] overflow-hidden px-20 hover:w-[100.5%] duration-200"
         >
           <Image
-            src={'/assets/images/decoration/history-decor-tree.svg'}
+            src={"/assets/images/decoration/history-decor-tree.svg"}
             className="absolute -z-10 right-0 top-0 h-24"
             width={370}
             height={200}
@@ -85,43 +93,3 @@ const GeneratedTestsHistory = () => {
 };
 
 export default GeneratedTestsHistory;
-
-// import { ArrowRight } from "lucide-react";
-// import Image from "next/image";
-
-// const GeneratedTestsHistory = () => {
-//   return (
-//     <div className="w-full flex flex-col items-center mt-10 mb-20">
-//       <h2 className="font-bold text-2xl mb-6">Generated tests</h2>
-//       <div className="flex items-center justify-between relative w-full h-24 rounded-xl border-4 z-0 border-[#D37C26] bg-[#F2EBD6] overflow-hidden px-20">
-//         <Image src={'/assets/images/decoration/history-decor-tree.svg'} className="absolute -z-10 right-0 top-0 h-24" width={370} height={200} alt="decoration tree image" />
-//         <p className="text-[#D37C26] font-bold text-xl">History test</p>
-//         <p className="text-[#D37C26] font-medium text-xl">40 questions</p>
-//         <button className="flex items-center p-1 px-4 font-bold text-[#D37C26] bg-white rounded-lg border-4 border-[#D37C26]">Start <ArrowRight className="ml-2"/></button>
-//       </div>
-
-//       <div className="flex mt-4 items-center justify-between relative w-full h-24 rounded-xl border-4 z-0 border-[#D37C26] bg-[#F2EBD6] overflow-hidden px-20">
-//         <Image src={'/assets/images/decoration/history-decor-tree.svg'} className="absolute -z-10 right-0 top-0 h-24" width={370} height={200} alt="decoration tree image" />
-//         <p className="text-[#D37C26] font-bold text-xl">History test</p>
-//         <p className="text-[#D37C26] font-medium text-xl">40 questions</p>
-//         <button className="flex items-center p-1 px-4 font-bold text-[#D37C26] bg-white rounded-lg border-4 border-[#D37C26]">Start <ArrowRight className="ml-2"/></button>
-//       </div>
-
-//       <div className="flex mt-4 items-center justify-between relative w-full h-24 rounded-xl border-4 z-0 border-[#D37C26] bg-[#F2EBD6] overflow-hidden px-20">
-//         <Image src={'/assets/images/decoration/history-decor-tree.svg'} className="absolute -z-10 right-0 top-0 h-24" width={370} height={200} alt="decoration tree image" />
-//         <p className="text-[#D37C26] font-bold text-xl">History test</p>
-//         <p className="text-[#D37C26] font-medium text-xl">40 questions</p>
-//         <button className="flex items-center p-1 px-4 font-bold text-[#D37C26] bg-white rounded-lg border-4 border-[#D37C26]">Start <ArrowRight className="ml-2"/></button>
-//       </div>
-
-//       <div className="flex mt-4 items-center justify-between relative w-full h-24 rounded-xl border-4 z-0 border-[#D37C26] bg-[#F2EBD6] overflow-hidden px-20">
-//         <Image src={'/assets/images/decoration/history-decor-tree.svg'} className="absolute -z-10 right-0 top-0 h-24" width={370} height={200} alt="decoration tree image" />
-//         <p className="text-[#D37C26] font-bold text-xl">History test</p>
-//         <p className="text-[#D37C26] font-medium text-xl">40 questions</p>
-//         <button className="flex items-center p-1 px-4 font-bold text-[#D37C26] bg-white rounded-lg border-4 border-[#D37C26]">Start <ArrowRight className="ml-2"/></button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default GeneratedTestsHistory;
