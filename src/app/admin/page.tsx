@@ -219,7 +219,6 @@ const Admin = () => {
             ) : (
               "Create Quiz"
             )}
-            Create Quiz
           </Button>
         </div>
       ) : (

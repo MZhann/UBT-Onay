@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { updateProfile } from "@/api/user"; // Uses the updateProfile function from api/user.ts
+import { updateProfile, getProfilePhoto, uploadProfilePhoto } from "@/api/user";
 import { useToast } from "@/hooks/use-toast";
 
 interface ProfileDataProps {
@@ -30,6 +30,9 @@ const ProfileData = ({
 }: ProfileDataProps) => {
   const { toast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const {
     register,
@@ -44,9 +47,31 @@ const ProfileData = ({
       password: "",
     },
   });
+  useEffect(() => {
+    async function fetchAvatar() {
+      try {
+        const blob = await getProfilePhoto();
+
+        if (blob) {
+          const objectUrl = URL.createObjectURL(blob);
+          setAvatarUrl(objectUrl);
+
+          // очистка при размонтировании
+          return () => URL.revokeObjectURL(objectUrl);
+        } else {
+          // fallback если blob не пришёл
+          setAvatarUrl("/assets/images/decoration/avatar.png");
+        }
+      } catch (err) {
+        console.error("Failed to load avatar", err);
+        setAvatarUrl("/assets/images/decoration/avatar.png");
+      }
+    }
+
+    fetchAvatar();
+  }, [triggerProfileInfo]);
 
   const openModal = () => {
-    // Reset the form with current profile data when opening the modal
     reset({
       first_name: firstName,
       last_name: lastName,
@@ -61,7 +86,6 @@ const ProfileData = ({
   };
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    // Ensure all fields are filled before submitting
     if (!data.first_name || !data.last_name || !data.email || !data.password) {
       toast({
         variant: "destructive",
@@ -78,14 +102,40 @@ const ProfileData = ({
         description: "Your profile has been updated successfully.",
       });
       closeModal();
-      // Trigger parent's refresh by updating triggerProfileInfo (for example, with a timestamp)
       setTriggerProfileInfo(!triggerProfileInfo);
     } catch (err) {
       console.log(err);
       toast({
         variant: "destructive",
         title: "Update Failed",
-        description: 'Error, check if every input is filled',
+        description: "Error, check if every input is filled",
+      });
+    }
+  };
+
+  const handleAvatarClick = () => {
+    setIsAvatarModalOpen(true);
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+    try {
+      const result = await uploadProfilePhoto(e.target.files[0]);
+      setAvatarUrl(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/${result.photo_url}`
+      );
+      toast({
+        variant: "success",
+        title: "Photo Updated",
+        description: "Your avatar has been updated.",
+      });
+      setTriggerProfileInfo(!triggerProfileInfo);
+    } catch (err) {
+      console.error("Failed to upload photo", err);
+      toast({
+        variant: "destructive",
+        title: "Upload Failed",
+        description: "Could not upload photo.",
       });
     }
   };
@@ -99,13 +149,48 @@ const ProfileData = ({
         </button>
       </div>
 
-      <div className="w-full flex items-center gap-5 mt-4 text-[#152759]">
-        <Image
-          src={"/assets/images/decoration/avatar.png"}
-          width={100}
-          height={100}
-          alt="avatar"
-        />
+      <div className="w-full flex items-center gap-5 mt-4 text-[#152759] relative">
+        {/* Avatar Container */}
+        <div className="relative w-[100px] h-[100px]">
+          <Image
+            src={avatarUrl || "/assets/images/decoration/avatar.png"}
+            width={100}
+            height={100}
+            alt="avatar"
+            className="rounded-full object-cover cursor-pointer w-[100px] h-[100px] border-4 border-myindigo"
+            onClick={handleAvatarClick}
+          />
+          {/* Edit Icon (bottom right corner) */}
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="absolute bottom-0 right-0 bg-white border p-1 rounded-full hover:bg-gray-100"
+            title="Edit Avatar"
+          >
+            <svg
+              className="w-4 h-4 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <path d="M15.232 5.232l3.536 3.536M9 11l6-6 3 3-6 6H9v-3z" />
+              <path
+                d="M16 16H4V4h12v12z"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            className="hidden"
+            onChange={handleFileChange}
+          />
+        </div>
+
+        {/* Text Info */}
         <div>
           <p className="font-bold text-lg">
             {firstName} {lastName}
@@ -114,6 +199,30 @@ const ProfileData = ({
         </div>
       </div>
 
+      {/* Avatar Preview Modal */}
+      {isAvatarModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
+          <div className="bg-white p-4 rounded shadow-lg max-w-[90vw] max-h-[90vh]">
+            <Image
+              src={avatarUrl || "/assets/images/decoration/avatar.png"}
+              alt="avatar-full"
+              width={400}
+              height={400}
+              className="object-contain rounded"
+            />
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={() => setIsAvatarModalOpen(false)}
+                className="px-4 py-2 bg-myindigo text-white rounded"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Profile Edit Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
@@ -126,7 +235,9 @@ const ProfileData = ({
                 <input
                   id="first_name"
                   className="w-full p-2 border rounded"
-                  {...register("first_name", { required: "First name is required" })}
+                  {...register("first_name", {
+                    required: "First name is required",
+                  })}
                 />
                 {errors.first_name && (
                   <p className="text-red-500 text-sm">
@@ -141,7 +252,9 @@ const ProfileData = ({
                 <input
                   id="last_name"
                   className="w-full p-2 border rounded"
-                  {...register("last_name", { required: "Last name is required" })}
+                  {...register("last_name", {
+                    required: "Last name is required",
+                  })}
                 />
                 {errors.last_name && (
                   <p className="text-red-500 text-sm">
@@ -171,10 +284,14 @@ const ProfileData = ({
                   id="password"
                   type="password"
                   className="w-full p-2 border rounded"
-                  {...register("password", { required: "Password is required" })}
+                  {...register("password", {
+                    required: "Password is required",
+                  })}
                 />
                 {errors.password && (
-                  <p className="text-red-500 text-sm">{errors.password.message}</p>
+                  <p className="text-red-500 text-sm">
+                    {errors.password.message}
+                  </p>
                 )}
               </div>
               <div className="flex justify-end space-x-2 mt-4">

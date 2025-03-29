@@ -46,6 +46,11 @@ const TestHistory = () => {
           </div>
         )}
 
+        {attempts.length === 0 && !isLoading && (
+          <div className="text-gray-500 w-full flex justify-center">
+            <p>No attempts found.</p>
+          </div>
+        )}
         <div className="grid auto-rows-min gap-4 md:grid-cols-3 w-full text-white">
           {attempts.map((attempt) => (
             <div
@@ -62,9 +67,7 @@ const TestHistory = () => {
               <p className="text-sm">
                 year: <strong>{attempt.quiz_year}</strong>
               </p>
-              <p className="text-lg font-bold mt-20">
-                result: {attempt.score}
-              </p>
+              <p className="text-lg font-bold mt-20">result: {attempt.score}</p>
             </div>
           ))}
         </div>

@@ -1,14 +1,9 @@
 "use client";
 
-// import { useDispatch } from "react-redux";
-import {
-  BadgeCheck,
-  ChevronsUpDown,
-  LogOut,
-} from "lucide-react";
+import { BadgeCheck, ChevronsUpDown, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,27 +19,32 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+
 export function NavUser({
   user,
 }: {
   user: {
     name: string;
     email: string;
-    avatar: string;
+    avatar: string; // может быть blob:, http или пустым
   };
 }) {
   const router = useRouter();
-  // const dispatch = useDispatch();
   const { isMobile } = useSidebar();
 
   const handleLogout = () => {
-    // Remove tokens from localStorage
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-
-    // Clear user info in Redux store
     router.push("/login");
   };
+
+  const fallbackAvatar = "/assets/images/decoration/avatar.png";
+
+  const isValidAvatar =
+    typeof user.avatar === "string" &&
+    (user.avatar.startsWith("blob:") || user.avatar.startsWith("http"));
+
+  const avatarSrc = isValidAvatar ? user.avatar : fallbackAvatar;
 
   return (
     <SidebarMenu>
@@ -55,17 +55,29 @@ export function NavUser({
               size="lg"
               className="ml-[0.27rem] data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg text-white">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">Hi</AvatarFallback>
+              <Avatar className="h-8 w-8 rounded-lg overflow-hidden">
+                <img
+                  src={avatarSrc}
+                  alt="avatar"
+                  className="h-full w-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = fallbackAvatar;
+                  }}
+                />
+                <AvatarFallback className="rounded-lg">
+                  {user.name?.[0] ?? "?"}
+                </AvatarFallback>
               </Avatar>
+
               <div className="grid flex-1 text-left text-sm leading-tight text-white">
-                <span className="truncate font-semibold ">{user.name}</span>
+                <span className="truncate font-semibold">{user.name}</span>
                 <span className="truncate text-xs">{user.email}</span>
               </div>
+
               <ChevronsUpDown className="ml-auto size-4 text-white" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
@@ -74,9 +86,18 @@ export function NavUser({
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">Hi</AvatarFallback>
+                <Avatar className="h-8 w-8 rounded-lg overflow-hidden">
+                  <img
+                    src={avatarSrc}
+                    alt="avatar"
+                    className="h-full w-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = fallbackAvatar;
+                    }}
+                  />
+                  <AvatarFallback className="rounded-lg">
+                    {user.name?.[0] ?? "?"}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{user.name}</span>
@@ -84,19 +105,22 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
+
             <DropdownMenuSeparator />
-            
             <DropdownMenuGroup>
-              <Link href={"/profile"}>
-                <DropdownMenuItem className="cursor-pointer" aria-label="кнопка профиль">
-                  <BadgeCheck />
+              <Link href="/profile">
+                <DropdownMenuItem className="cursor-pointer">
+                  <BadgeCheck className="mr-2 h-4 w-4" />
                   Profile
                 </DropdownMenuItem>
               </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer" aria-label="кнопка выйти">
-              <LogOut />
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className="cursor-pointer"
+            >
+              <LogOut className="mr-2 h-4 w-4" />
               Log Out
             </DropdownMenuItem>
           </DropdownMenuContent>

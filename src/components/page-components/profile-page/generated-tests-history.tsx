@@ -42,6 +42,11 @@ const GeneratedTestsHistory = () => {
         <Skeleton className="mt-4  w-full h-24 rounded-xl border-4 bg-[#F2EBD6] px-20"/>
         <Skeleton className="mt-4  w-full h-24 rounded-xl border-4 bg-[#F2EBD6] px-20"/>
       </div>)}
+      {quizzes.length === 0 && !isLoading && (
+        <div className="text-gray-500 w-full flex justify-center">
+          <p>No generated tests found.</p>
+        </div>
+      )}
       {paginated.map((quiz) => (
         <div
           key={quiz._id}

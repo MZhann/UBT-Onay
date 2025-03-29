@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
-// import Image from "next/image";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
@@ -15,7 +14,7 @@ import {
 import { NavMain } from "@/components/shadcn-custom/sidebar/nav-main";
 import { NavUser } from "@/components/shadcn-custom/sidebar/nav-user";
 import { getCurrentUser } from "@/store/slices/userSlice";
-
+import { getProfilePhoto } from "@/api/user";
 import {
   Sidebar,
   SidebarContent,
@@ -26,22 +25,48 @@ import {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const dispatch = useDispatch<AppDispatch>();
-
   const { name, surname, email } = useSelector(
     (state: RootState) => state.user
   );
 
+  const [avatarUrl, setAvatarUrl] = useState<string>(
+    "/assets/images/profile-pics/robot-avatar.png"
+  );
   useEffect(() => {
     dispatch(getCurrentUser());
-  }, [dispatch]);
 
-  // const userName = name || surname ? `${name} ${surname}` : "Loading...";
+    const fetchAvatar = async () => {
+      try {
+        const blob = await getProfilePhoto();
+
+        if (blob) {
+          const objectUrl = URL.createObjectURL(blob);
+          setAvatarUrl(objectUrl);
+
+          // Очистка URL после размонтирования
+          return () => URL.revokeObjectURL(objectUrl);
+        } else {
+          setAvatarUrl("/assets/images/profile-pics/robot-avatar.png");
+        }
+      } catch (err) {
+        console.error("Failed to load avatar", err);
+        setAvatarUrl("/assets/images/profile-pics/robot-avatar.png");
+      }
+    };
+
+    fetchAvatar();
+
+    return () => {
+      // Cleanup the avatar URL if it was created
+      URL.revokeObjectURL(avatarUrl);
+    };
+  }, [dispatch]);
 
   const data = {
     user: {
       name: `${name} ${surname}` || "Loading...",
       email: email || "no email",
-      avatar: "/assets/images/profile-pics/robot-avatar.png",
+      avatar: avatarUrl,
     },
     navMain: [
       { title: "Home page", url: "/", icon: House },
@@ -65,7 +90,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        {/* {loading ? <h1>Loading...</h1> : <NavUser user={data.user} />} */}
         <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />

@@ -76,9 +76,22 @@ export default function LeaderboardPage() {
         <h1 className="text-2xl font-bold mb-4">Leaderboard</h1>
 
         <div className="flex flex-col items-center mb-4">
-          <p className="text-lg">Total users: <span className="font-bold text-xl text-indigo-500">{totalUsersCount}</span></p>
-          <p className="text-lg">Your place: <span className="font-bold text-xl text-indigo-500">{rank}</span></p>
-          <p className="text-lg">Your score: <span className="font-bold text-xl text-indigo-500">{totalScore}</span></p>
+          <p className="text-lg">
+            Total users:{" "}
+            <span className="font-bold text-xl text-indigo-500">
+              {totalUsersCount}
+            </span>
+          </p>
+          <p className="text-lg">
+            Your place:{" "}
+            <span className="font-bold text-xl text-indigo-500">{rank}</span>
+          </p>
+          <p className="text-lg">
+            Your score:{" "}
+            <span className="font-bold text-xl text-indigo-500">
+              {totalScore}
+            </span>
+          </p>
         </div>
       </div>
 
@@ -102,7 +115,12 @@ export default function LeaderboardPage() {
                 <span className="text-lg font-semibold">
                   {page * PAGE_SIZE + index + 1}
                 </span>
-                <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+                <div className="w-10 h-10 rounded-full">
+                  {index == 0 && <p className="text-4xl">🥇</p>}
+                  {index == 1 && <p className="text-4xl">🥈</p>}
+                  {index == 2 && <p className="text-4xl">🥉</p>}
+                  {index > 2 && <p className="text-4xl">🏅</p>}
+                </div>
                 <span>
                   {user.first_name} {user.last_name}
                 </span>

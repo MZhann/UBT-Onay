@@ -23,3 +23,14 @@ export interface UpdateProfileResponse {
   password: string;
   score: number;
 }
+
+// userTypes.ts
+
+export interface UploadProfilePhotoResponse {
+  message: string;
+  photo_url: string;
+}
+
+export interface ProfilePhotoResponse {
+  photo_url: string;
+}
