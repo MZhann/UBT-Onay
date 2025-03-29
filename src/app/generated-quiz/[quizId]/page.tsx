@@ -59,19 +59,12 @@ export default function GeneratedQuizPage({
   useEffect(() => {
     const fetchQuiz = async () => {
       try {
-        const response = await backendApiInstance.get<QuizData[]>(
-          "/generated-quiz/me"
-        ); // Fetch the array
-        console.log(response.data); // Debugging: log to check fetched data
-
-        const foundQuiz = response.data.find((q) => q._id === params.quizId); // Find quiz by ID
-        if (foundQuiz) {
-          setQuiz(foundQuiz);
-        } else {
-          console.error("Quiz not found in the list");
-        }
+        const response = await backendApiInstance.get<QuizData>(
+          `/generated-quiz/${params.quizId}`
+        );
+        setQuiz(response.data);
       } catch (error) {
-        console.error("Error fetching quizzes:", error);
+        console.error("Error fetching quiz:", error);
       } finally {
         setLoading(false);
       }
@@ -187,8 +180,8 @@ export default function GeneratedQuizPage({
                     </div>
                   ))}
                   <Button
-                  variant={"indigo"}
-                  size={'lg'}
+                    variant={"indigo"}
+                    size={"lg"}
                     onClick={() =>
                       submitAnswer(question.id, answers[question.id] || [])
                     }
