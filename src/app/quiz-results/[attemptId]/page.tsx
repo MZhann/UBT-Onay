@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { getQuizAttemptDetails } from "@/api/quiz";
 import { GetQuizAttemptDetailsResponse } from "@/types/quizTypes";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 export default function QuizResultsPage() {
   const { attemptId } = useParams<{ attemptId: string }>();
-  const [attempt, setAttempt] = useState<GetQuizAttemptDetailsResponse | null>(null);
+  const [attempt, setAttempt] = useState<GetQuizAttemptDetailsResponse | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,8 +29,10 @@ export default function QuizResultsPage() {
     fetchData();
   }, [attemptId]);
 
-  if (loading) return <p className="text-center mt-10 text-myindigo">Loading...</p>;
-  if (!attempt) return <p className="text-center mt-10 text-red-500">Attempt not found</p>;
+  if (loading)
+    return <p className="text-center mt-10 text-myindigo">Loading...</p>;
+  if (!attempt)
+    return <p className="text-center mt-10 text-red-500">Attempt not found</p>;
 
   const formatTime = (totalSeconds: number): string => {
     const hours = Math.floor(totalSeconds / 3600);
@@ -43,22 +46,30 @@ export default function QuizResultsPage() {
     <div className="p-6 text-gray-800 w-full mx-auto px-20">
       <h1 className="text-3xl font-bold mb-4">{attempt.quiz_title}</h1>
 
-      <div className="text-lg mb-8 flex items-center justify-between">
+      <div className="text-lg mb-8 flex items-center justify-between flex-wrap gap-4">
         <p>
           <span className="text-gray-500">Score:</span>{" "}
-          <span className="font-bold text-gray-700">{attempt.score} / {attempt.max_score}</span>
+          <span className="font-bold text-gray-700">
+            {attempt.score} / {attempt.max_score}
+          </span>
         </p>
         <p>
           <span className="text-gray-500">Questions:</span>{" "}
-          <span className="font-bold text-gray-700">{attempt.questions_count}</span>
+          <span className="font-bold text-gray-700">
+            {attempt.questions_count}
+          </span>
         </p>
         <p>
           <span className="text-gray-500">Time taken:</span>{" "}
-          <span className="font-bold text-gray-700">{formatTime(Math.floor(attempt.time_taken))}</span>
+          <span className="font-bold text-gray-700">
+            {formatTime(Math.floor(attempt.time_taken))}
+          </span>
         </p>
         <p>
           <span className="text-gray-500">Variant:</span>{" "}
-          <span className="font-bold text-gray-700">{attempt.quiz_variant}</span>
+          <span className="font-bold text-gray-700">
+            {attempt.quiz_variant}
+          </span>
         </p>
         <p>
           <span className="text-gray-500">Year:</span>{" "}
@@ -74,33 +85,40 @@ export default function QuizResultsPage() {
 
           const isCorrect =
             question.selected_options.length === correctLabels.length &&
-            question.selected_options.every((sel) => correctLabels.includes(sel));
+            question.selected_options.every((sel) =>
+              correctLabels.includes(sel)
+            );
 
           return (
-            <div key={question.question_id} className="p-4 border rounded-lg bg-white shadow">
+            <div
+              key={question.question_id}
+              className={cn(
+                "p-4 border rounded-lg shadow",
+                isCorrect ? "bg-green-50 border-green-300" : "bg-white"
+              )}
+            >
               <p className="font-medium text-lg mb-2">
                 {index + 1}. {question.question_text}
               </p>
               <ul className="space-y-1">
                 {question.options.map((opt) => {
-                  const isUserSelected = question.selected_options.includes(opt.label);
+                  const isUserSelected = question.selected_options.includes(
+                    opt.label
+                  );
                   const isCorrectOption = opt.is_correct;
 
+                  const optionClass = cn("px-3 py-2 rounded-md text-sm", {
+                    "bg-green-100 text-green-800":
+                      (isCorrect && isUserSelected) ||
+                      (!isCorrect && isCorrectOption),
+                    "bg-red-100 text-red-800":
+                      !isCorrect && isUserSelected && !isCorrectOption,
+                  });
+
                   return (
-                    <li
-                      key={opt.label}
-                      className={cn(
-                        "px-3 py-2 rounded-md text-sm",
-                        isCorrectOption
-                          ? "bg-green-100 text-green-800"
-                          : isUserSelected
-                          ? "bg-red-100 text-red-800"
-                          : "text-gray-700"
-                      )}
-                    >
-                      <span className="font-semibold">{opt.label}.</span> {opt.option_text}{" "}
-                      {isUserSelected && <Badge variant="outline">Your choice</Badge>}
-                      {isCorrectOption && <Badge className="ml-2">Correct</Badge>}
+                    <li key={opt.label} className={optionClass}>
+                      <span className="font-semibold">{opt.label}.</span>{" "}
+                      {opt.option_text}
                     </li>
                   );
                 })}

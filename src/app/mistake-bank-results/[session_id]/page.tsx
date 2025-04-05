@@ -38,7 +38,10 @@ export default function MistakeBankResultsPage() {
   return (
     <div className="p-6 text-gray-800">
       <h1 className="text-2xl font-bold mb-4">Mistake Bank Quiz Results</h1>
-      <p className="text-gray-600 mb-2">Session ID: <span className="text-gray-800 font-semibold">{session_id}</span></p>
+      <p className="text-gray-600 mb-2">
+        Session ID:{" "}
+        <span className="text-gray-800 font-semibold">{session_id}</span>
+      </p>
       <p className="text-gray-600 mb-6">
         Total Score:{" "}
         <span className="text-lg font-semibold text-gray-900">
@@ -57,7 +60,13 @@ export default function MistakeBankResultsPage() {
             res.selected_options.every((sel) => correctLabels.includes(sel));
 
           return (
-            <div key={res.question_id} className="p-4 border rounded-lg bg-white shadow">
+            <div
+              key={res.question_id}
+              className={cn(
+                "p-4 border rounded-lg shadow",
+                isCorrect ? "bg-green-50 border-green-300" : "bg-white"
+              )}
+            >
               <p className="font-medium text-lg mb-2">
                 {index + 1}. {res.question_text}
               </p>
@@ -66,21 +75,26 @@ export default function MistakeBankResultsPage() {
                   const isUserSelected = res.selected_options.includes(opt.label);
                   const isCorrectOption = opt.is_correct;
 
+                  const optionClass = cn(
+                    "px-3 py-2 rounded-md text-sm",
+                    {
+                      // Верный ответ, если пользователь ошибся — показываем зелёным
+                      "bg-green-100 text-green-800":
+                        (isCorrect && isUserSelected) || (!isCorrect && isCorrectOption),
+                      // Выбор пользователя, если он был неверным — красным
+                      "bg-red-100 text-red-800":
+                        !isCorrect && isUserSelected && !isCorrectOption,
+                      // Иначе обычный стиль
+                    }
+                  );
+
                   return (
-                    <li
-                      key={opt.label}
-                      className={cn(
-                        "px-3 py-2 rounded-md text-sm",
-                        isCorrectOption
-                          ? "bg-green-100 text-green-800"
-                          : isUserSelected
-                          ? "bg-red-100 text-red-800"
-                          : "text-gray-700"
+                    <li key={opt.label} className={optionClass}>
+                      <span className="font-semibold">{opt.label}.</span>{" "}
+                      {opt.option_text}{" "}
+                      {isUserSelected && (
+                        <Badge variant="outline">Your choice</Badge>
                       )}
-                    >
-                      <span className="font-semibold">{opt.label}.</span> {opt.option_text}{" "}
-                      {isUserSelected && <Badge variant="outline">Your choice</Badge>}
-                      {isCorrectOption && <Badge className="ml-2">Correct</Badge>}
                     </li>
                   );
                 })}

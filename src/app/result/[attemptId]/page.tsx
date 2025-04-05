@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { getMyQuizAttempts } from "@/api/generated-quiz";
 import { QuizAttempt } from "@/types/generatedQuizTypes";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 export default function QuizResultPage() {
@@ -39,18 +38,29 @@ export default function QuizResultPage() {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-  
     const pad = (num: number) => String(num).padStart(2, "0");
-  
     return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
   };
 
   return (
     <div className="p-6 text-gray-800">
       <h1 className="text-2xl font-bold mb-2">{attempt.quiz_title}</h1>
-      <p className="text-gray-500">Subject: <span className="font-bold text-lg text-gray-700">{attempt.quiz_subject}</span></p>
-      <p className="text-gray-500">Total score: <span className="font-bold text-lg text-gray-700">{attempt.score} / {attempt.answers.length}</span></p>
-      <p className="text-gray-500 mb-6">Time taken: <span className="font-bold text-lg text-gray-700">{formatTime(timeTakenSec)}</span></p>
+      <p className="text-gray-500">
+        Subject:{" "}
+        <span className="font-bold text-lg text-gray-700">{attempt.quiz_subject}</span>
+      </p>
+      <p className="text-gray-500">
+        Total score:{" "}
+        <span className="font-bold text-lg text-gray-700">
+          {attempt.score} / {attempt.answers.length}
+        </span>
+      </p>
+      <p className="text-gray-500 mb-6">
+        Time taken:{" "}
+        <span className="font-bold text-lg text-gray-700">
+          {formatTime(timeTakenSec)}
+        </span>
+      </p>
 
       <div className="space-y-6">
         {attempt.answers.map((answer, index) => {
@@ -58,12 +68,18 @@ export default function QuizResultPage() {
             .filter((opt) => opt.is_correct)
             .map((opt) => opt.label);
 
-          const isCorrect = 
+          const isCorrect =
             answer.selected_options.length === correctLabels.length &&
             answer.selected_options.every((sel) => correctLabels.includes(sel));
 
           return (
-            <div key={answer.question_id} className="p-4 border rounded-lg bg-white shadow">
+            <div
+              key={answer.question_id}
+              className={cn(
+                "p-4 border rounded-lg shadow",
+                isCorrect ? "bg-green-50 border-green-300" : "bg-white"
+              )}
+            >
               <p className="font-medium text-lg mb-2">
                 {index + 1}. {answer.question_text}
               </p>
@@ -72,21 +88,17 @@ export default function QuizResultPage() {
                   const isUserSelected = answer.selected_options.includes(opt.label);
                   const isCorrectOption = opt.is_correct;
 
+                  const optionClass = cn(
+                    "px-3 py-2 rounded-md text-sm",
+                    {
+                      "bg-green-100 text-green-800": (isCorrect && isUserSelected) || (!isCorrect && isCorrectOption),
+                      "bg-red-100 text-red-800": !isCorrect && isUserSelected && !isCorrectOption,
+                    }
+                  );
+
                   return (
-                    <li
-                      key={opt.label}
-                      className={cn(
-                        "px-3 py-2 rounded-md text-sm",
-                        isCorrectOption
-                          ? "bg-green-100 text-green-800"
-                          : isUserSelected
-                          ? "bg-red-100 text-red-800"
-                          : "text-gray-700"
-                      )}
-                    >
-                      <span className="font-semibold">{opt.label}.</span> {opt.text}{" "}
-                      {isUserSelected && <Badge variant="outline">Your choice</Badge>}
-                      {isCorrectOption && <Badge className="ml-2">Correct</Badge>}
+                    <li key={opt.label} className={optionClass}>
+                      <span className="font-semibold">{opt.label}.</span> {opt.text}
                     </li>
                   );
                 })}
