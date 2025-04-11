@@ -53,13 +53,21 @@ export async function getMyQuizAttempts(): Promise<QuizAttempt[]> {
 }
 
 // Получение всех сгенерированных тестов текущего пользователя
-
 export async function fetchMyGeneratedQuizzes(): Promise<GeneratedQuiz[]> {
   try {
-    const response = await backendApiInstance.get<GeneratedQuiz[]>(
+    const response = await backendApiInstance.get<GeneratedQuiz | GeneratedQuiz[]>(
       "/generated-quiz/me"
     );
-    return response.data;
+
+    const data = response.data;
+
+    if (Array.isArray(data)) {
+      return data;
+    } else if (data && typeof data === "object") {
+      return [data]; // ✅ оборачиваем одиночный объект в массив
+    }
+
+    return [];
   } catch (error) {
     if ((error as AxiosError).isAxiosError) {
       throw error;
@@ -67,3 +75,18 @@ export async function fetchMyGeneratedQuizzes(): Promise<GeneratedQuiz[]> {
     throw new Error("Failed to fetch generated quizzes");
   }
 }
+
+
+// export async function fetchMyGeneratedQuizzes(): Promise<GeneratedQuiz[]> {
+//   try {
+//     const response = await backendApiInstance.get<GeneratedQuiz[]>(
+//       "/generated-quiz/me"
+//     );
+//     return response.data;
+//   } catch (error) {
+//     if ((error as AxiosError).isAxiosError) {
+//       throw error;
+//     }
+//     throw new Error("Failed to fetch generated quizzes");
+//   }
+// }

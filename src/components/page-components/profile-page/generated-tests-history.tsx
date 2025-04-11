@@ -21,7 +21,15 @@ const GeneratedTestsHistory = () => {
       try {
         setIsLoading(true);
         const data = await fetchMyGeneratedQuizzes();
-        setQuizzes(Array.isArray(data) ? data : []);
+        console.log("Fetched quizzes:", data);
+
+        if (Array.isArray(data)) {
+          setQuizzes(data);
+        } else if (data && typeof data === "object") {
+          setQuizzes([data]);
+        } else {
+          setQuizzes([]);
+        }
       } catch (error) {
         console.error("Failed to load generated quizzes", error);
       } finally {
@@ -31,8 +39,8 @@ const GeneratedTestsHistory = () => {
     load();
   }, []);
 
-  const paginated = Array.isArray(quizzes) ? quizzes.slice(0, page * ITEMS_PER_PAGE) : [];
-  const canLoadMore = Array.isArray(quizzes) && quizzes.length > paginated.length;
+  const paginated = quizzes.slice(0, page * ITEMS_PER_PAGE);
+  const canLoadMore = quizzes.length > paginated.length;
 
   return (
     <div className="w-full flex flex-col items-center mt-10 mb-20">
@@ -42,7 +50,7 @@ const GeneratedTestsHistory = () => {
         <div className="w-full">
           {Array.from({ length: 5 }).map((_, i) => (
             <Skeleton
-              key={i}
+              key={`skeleton-${i}`}
               className="mt-4 w-full h-24 rounded-xl border-4 bg-[#F2EBD6] px-20"
             />
           ))}
@@ -61,7 +69,7 @@ const GeneratedTestsHistory = () => {
           className="flex mt-4 items-center justify-between relative w-full h-24 rounded-xl border-4 z-0 border-[#D37C26] bg-[#F2EBD6] overflow-hidden px-20 hover:w-[100.5%] duration-200"
         >
           <Image
-            src={"/assets/images/decoration/history-decor-tree.svg"}
+            src="/assets/images/decoration/history-decor-tree.svg"
             className="absolute -z-10 right-0 top-0 h-24"
             width={370}
             height={200}

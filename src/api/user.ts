@@ -72,15 +72,23 @@ export async function uploadProfilePhoto(
 /**
  * Get profile photo URL
  */
-export async function getProfilePhoto(): Promise<Blob | null> {
+export async function getProfilePhoto(accessToken: string): Promise<Blob | null> {
   try {
-    const response = await backendApiInstance.get("/profile/profile-photo/", {
-      responseType: "blob",
+    const response = await fetch("https://untcs-production.up.railway.app/api/v1/profile/profile-photo/", {
+      method: "GET",
+      headers: {
+        "Accept": "image/*",
+        "Authorization": `Bearer ${accessToken}`,
+      },
     });
 
-    const contentType = response.headers["content-type"];
+    if (!response.ok) {
+      throw new Error("Failed to fetch profile photo");
+    }
+
+    const contentType = response.headers.get("content-type");
     if (contentType?.startsWith("image/")) {
-      return response.data;
+      return await response.blob();
     }
 
     return null;

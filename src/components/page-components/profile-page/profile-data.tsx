@@ -50,7 +50,9 @@ const ProfileData = ({
   useEffect(() => {
     async function fetchAvatar() {
       try {
-        const blob = await getProfilePhoto();
+        if(window === undefined) return;
+        const accessToken = localStorage.getItem("accessToken");
+        const blob = await getProfilePhoto(accessToken as string);
 
         if (blob) {
           const objectUrl = URL.createObjectURL(blob);

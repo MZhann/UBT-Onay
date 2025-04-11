@@ -37,7 +37,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
     const fetchAvatar = async () => {
       try {
-        const blob = await getProfilePhoto();
+        if(!window) return;
+        const accessToken = window.localStorage.getItem("accessToken");
+        const blob = await getProfilePhoto(accessToken as string);
 
         if (blob) {
           const objectUrl = URL.createObjectURL(blob);
