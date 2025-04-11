@@ -106,28 +106,32 @@ export default function LeaderboardPage() {
         </div>
       ) : (
         <div className="space-y-2">
-          {users.map((user, index) => (
-            <Card
-              key={user._id}
-              className="flex items-center justify-between p-4 bg-blue-900 text-white rounded-lg"
-            >
-              <div className="flex items-center gap-3">
-                <span className="text-lg font-semibold">
-                  {page * PAGE_SIZE + index + 1}
-                </span>
-                <div className="w-10 h-10 rounded-full">
-                  {index == 0 && <p className="text-4xl">🥇</p>}
-                  {index == 1 && <p className="text-4xl">🥈</p>}
-                  {index == 2 && <p className="text-4xl">🥉</p>}
-                  {index > 2 && <p className="text-4xl">🏅</p>}
+          {users.map((user, index) => {
+            
+            const overallRank = page * PAGE_SIZE + index + 1; // Calculate overall rank based on pagination
+            return (
+              <Card
+                key={user._id}
+                className="flex items-center justify-between p-4 bg-blue-900 text-white rounded-lg"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-lg font-semibold">
+                    {page * PAGE_SIZE + index + 1}
+                  </span>
+                  <div className="w-10 h-10 rounded-full">
+                    {overallRank == 1 && <p className="text-4xl">🥇</p>}
+                    {overallRank == 2 && <p className="text-4xl">🥈</p>}
+                    {overallRank == 3 && <p className="text-4xl">🥉</p>}
+                    {overallRank > 3 && <p className="text-4xl">🏅</p>}
+                  </div>
+                  <span>
+                    {user.first_name} {user.last_name}
+                  </span>
                 </div>
-                <span>
-                  {user.first_name} {user.last_name}
-                </span>
-              </div>
-              <span>{user.total_score} points</span>
-            </Card>
-          ))}
+                <span>{user.total_score} points</span>
+              </Card>
+            );
+          })}
         </div>
       )}
 

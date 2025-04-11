@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -129,7 +128,7 @@ export default function UbtTestPage() {
     return <p className="text-center mt-10 text-myindigo">Loading quiz...</p>;
 
   return (
-    <div className="min-h-screen flex p-6 text-gray-800">
+    <div className="min-h-screen flex flex-col-reverse md:flex-row p-6 text-gray-800">
       {/* Questions Area */}
       <div className="flex-1 px-10">
         <h1 className="text-3xl font-bold mb-4">UNT Test</h1>
@@ -258,9 +257,9 @@ export default function UbtTestPage() {
         )}
       </div>
 
-      <div className="w-64"></div>
+      <div className="w-64 hidden md:flex"></div>
       {/* Right Sidebar */}
-      <div className="w-64 pl-6 border-l flex flex-col fixed top-16 right-0 h-full bg-white p-4 shadow-lg">
+      <div className="w-full md:w-64 h-fit md:border-none pl-10 md:pl-6 border-l flex gap-6 md:flex-col md:fixed md:top-16 md:right-0 md:h-full bg-white p-4 md:shadow-lg">
         <div className="text-xl font-bold text-myindigo mb-4">Test Info</div>
         <div className="text-gray-700 mb-2">
           <strong>Time:</strong> {formatTime(timer)}
