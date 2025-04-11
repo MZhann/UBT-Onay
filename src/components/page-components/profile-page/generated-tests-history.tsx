@@ -80,7 +80,8 @@ const GeneratedTestsHistory = () => {
             {quiz.questions.length} questions
           </p>
           <button
-            onClick={() => router.push(`/test?id=${quiz._id}`)}
+
+            onClick={() => router.push(`/generated-quiz/${quiz._id}`)}
             className="flex items-center p-1 px-4 font-bold text-[#D37C26] bg-white rounded-lg border-4 border-[#D37C26] hover:text-white hover:bg-[#D37C26] hover:border-[#F2EBD6] duration-300"
           >
             Start <ArrowRight className="ml-2" />
