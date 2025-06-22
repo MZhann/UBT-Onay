@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { getQuizAttemptDetails } from "@/api/quiz";
 import { GetQuizAttemptDetailsResponse } from "@/types/quizTypes";
 import { cn } from "@/lib/utils";
+import { useSearchParams } from "next/navigation";
 
 export default function QuizResultsPage() {
   const { attemptId } = useParams<{ attemptId: string }>();
@@ -12,6 +13,10 @@ export default function QuizResultsPage() {
     null
   );
   const [loading, setLoading] = useState(true);
+
+  const searchParams = useSearchParams();
+  const timeTakenParam = searchParams.get("time_taken");
+  const timeTakenFromUrl = timeTakenParam ? parseInt(timeTakenParam) : null;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,8 +66,13 @@ export default function QuizResultsPage() {
         </p>
         <p>
           <span className="text-gray-500">Time taken:</span>{" "}
+          {/* <span className="font-bold text-gray-700">
+            {formatTime(Math.floor(attempt.time_taken))}, {attempt.time_taken}
+          </span> */}
           <span className="font-bold text-gray-700">
-            {formatTime(Math.floor(attempt.time_taken))}
+            {timeTakenFromUrl
+              ? formatTime(timeTakenFromUrl)
+              : formatTime(Math.floor(attempt.time_taken))}
           </span>
         </p>
         <p>

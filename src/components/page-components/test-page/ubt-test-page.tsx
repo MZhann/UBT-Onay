@@ -102,12 +102,22 @@ export default function UbtTestPage() {
     }
   };
 
+  // const completeQuiz = async () => {
+  //   if (!attemptId) return;
+  //   try {
+  //     await finishQuizAttempt(attemptId);
+  //     setIsRunning(false);
+  //     router.push(`/quiz-results/${attemptId}`);
+  //   } catch (error) {
+  //     console.error("Failed to complete quiz", error);
+  //   }
+  // };
   const completeQuiz = async () => {
     if (!attemptId) return;
     try {
       await finishQuizAttempt(attemptId);
       setIsRunning(false);
-      router.push(`/quiz-results/${attemptId}`);
+      router.push(`/quiz-results/${attemptId}?time_taken=${timer}`);
     } catch (error) {
       console.error("Failed to complete quiz", error);
     }
