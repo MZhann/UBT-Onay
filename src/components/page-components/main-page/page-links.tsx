@@ -11,7 +11,7 @@ const PageLinks = () => {
         <div className="absolute w-full  h-16 backdrop-blur-md bottom-0 left-0 rounded-xl"></div>
 
         <div className="text-white h-full flex flex-col justify-between">
-          <p className="text-2xl font-bold z-20 uppercase">unt tests</p>
+          <p className="text-2xl font-bold z-20 uppercase">ubt tests</p>
           <p className="z-20">
             500 UBT variants from <br />
             2020-2025

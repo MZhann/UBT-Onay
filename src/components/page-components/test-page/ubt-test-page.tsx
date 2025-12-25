@@ -141,7 +141,7 @@ export default function UbtTestPage() {
     <div className="min-h-screen flex flex-col-reverse md:flex-row p-6 text-gray-800">
       {/* Questions Area */}
       <div className="flex-1 px-10">
-        <h1 className="text-3xl font-bold mb-4">UNT Test</h1>
+        <h1 className="text-3xl font-bold mb-4">UBT Test</h1>
 
         {!isQuizStarted ? (
           <Button className="w-full h-16 text-lg" onClick={startQuiz}>
