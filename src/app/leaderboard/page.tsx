@@ -57,7 +57,7 @@ export default function LeaderboardPage() {
     setLoading(true);
     try {
       const response = await axios.get<LeaderboardResponse>(
-        `https://untcs-production-93fc.up.railway.app/api/v1/profile/leaderboard?skip=${
+        `https://untcs-production.up.railway.app/api/v1/profile/leaderboard?skip=${
           page * PAGE_SIZE
         }&limit=${PAGE_SIZE}`
       );
